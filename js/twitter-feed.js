@@ -73,37 +73,113 @@ document.addEventListener('DOMContentLoaded', function() {
       const tweetElement = document.createElement('div');
       tweetElement.className = 'tweet';
       
-      // Format links in tweet content
-      let formattedContent = tweet.content;
+      // Create content element
+      const contentElement = document.createElement('div');
+      contentElement.className = 'tweet-content';
       
-      // Format hashtags
-      formattedContent = formattedContent.replace(/#(\w+)/g, '<a href="https://twitter.com/hashtag/$1" target="_blank">#$1</a>');
+      // Process the tweet content to create proper links
+      let content = tweet.content;
       
-      // Format URLs
-      formattedContent = formattedContent.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+      // Create a document fragment to hold the processed content
+      const fragment = document.createDocumentFragment();
       
-      // Format mentions
-      formattedContent = formattedContent.replace(/@(\w+)/g, '<a href="https://twitter.com/$1" target="_blank">@$1</a>');
+      // Split the content by spaces to process each word
+      const words = content.split(' ');
       
-      tweetElement.innerHTML = `
-        <div class="tweet-content">${formattedContent}</div>
-        <div class="tweet-date">${tweet.date}</div>
-        <div class="tweet-actions">
-          <div class="tweet-action">
-            <i class="far fa-heart"></i>
-            <span>${tweet.likes || 0}</span>
-          </div>
-          <div class="tweet-action">
-            <i class="fas fa-retweet"></i>
-            <span>${tweet.retweets || 0}</span>
-          </div>
-          <div class="tweet-action">
-            <i class="far fa-comment"></i>
-            <span>${tweet.replies || 0}</span>
-          </div>
-        </div>
-      `;
+      words.forEach((word, index) => {
+        // Check if the word is a hashtag
+        if (word.startsWith('#')) {
+          const tag = word.substring(1);
+          const link = document.createElement('a');
+          link.href = `https://twitter.com/hashtag/${tag}`;
+          link.target = '_blank';
+          link.textContent = word;
+          fragment.appendChild(link);
+        }
+        // Check if the word is a URL
+        else if (word.match(/^https?:\/\//i)) {
+          const link = document.createElement('a');
+          link.href = word;
+          link.target = '_blank';
+          link.textContent = word;
+          fragment.appendChild(link);
+        }
+        // Check if the word is a mention
+        else if (word.startsWith('@')) {
+          const username = word.substring(1);
+          const link = document.createElement('a');
+          link.href = `https://twitter.com/${username}`;
+          link.target = '_blank';
+          link.textContent = word;
+          fragment.appendChild(link);
+        }
+        // Regular word
+        else {
+          fragment.appendChild(document.createTextNode(word));
+        }
+        
+        // Add a space after each word except the last one
+        if (index < words.length - 1) {
+          fragment.appendChild(document.createTextNode(' '));
+        }
+      });
       
+      // Add the processed content to the content element
+      contentElement.appendChild(fragment);
+      
+      // Create date element
+      const dateElement = document.createElement('div');
+      dateElement.className = 'tweet-date';
+      dateElement.textContent = tweet.date;
+      
+      // Create actions element
+      const actionsElement = document.createElement('div');
+      actionsElement.className = 'tweet-actions';
+      
+      // Create like action
+      const likeAction = document.createElement('div');
+      likeAction.className = 'tweet-action';
+      const likeIcon = document.createElement('i');
+      likeIcon.className = 'far fa-heart';
+      const likeCount = document.createElement('span');
+      likeCount.textContent = tweet.likes || 0;
+      likeAction.appendChild(likeIcon);
+      likeAction.appendChild(document.createTextNode(' '));
+      likeAction.appendChild(likeCount);
+      
+      // Create retweet action
+      const retweetAction = document.createElement('div');
+      retweetAction.className = 'tweet-action';
+      const retweetIcon = document.createElement('i');
+      retweetIcon.className = 'fas fa-retweet';
+      const retweetCount = document.createElement('span');
+      retweetCount.textContent = tweet.retweets || 0;
+      retweetAction.appendChild(retweetIcon);
+      retweetAction.appendChild(document.createTextNode(' '));
+      retweetAction.appendChild(retweetCount);
+      
+      // Create reply action
+      const replyAction = document.createElement('div');
+      replyAction.className = 'tweet-action';
+      const replyIcon = document.createElement('i');
+      replyIcon.className = 'far fa-comment';
+      const replyCount = document.createElement('span');
+      replyCount.textContent = tweet.replies || 0;
+      replyAction.appendChild(replyIcon);
+      replyAction.appendChild(document.createTextNode(' '));
+      replyAction.appendChild(replyCount);
+      
+      // Add actions to actions element
+      actionsElement.appendChild(likeAction);
+      actionsElement.appendChild(retweetAction);
+      actionsElement.appendChild(replyAction);
+      
+      // Add all elements to the tweet element
+      tweetElement.appendChild(contentElement);
+      tweetElement.appendChild(dateElement);
+      tweetElement.appendChild(actionsElement);
+      
+      // Add the tweet element to the container
       tweetsContainer.appendChild(tweetElement);
     });
   }
