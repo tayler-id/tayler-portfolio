@@ -331,6 +331,134 @@ nav ul li a:hover {
   display: none;
 }
 
+/* Twitter Feed Section */
+#twitter-feed {
+  padding: 6rem 0;
+  background-color: var(--secondary-color);
+}
+
+.twitter-container {
+  background-color: var(--white);
+  border-radius: 12px;
+  box-shadow: var(--box-shadow);
+  overflow: hidden;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.twitter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.twitter-profile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.twitter-logo {
+  font-size: 2rem;
+  color: #1DA1F2;
+}
+
+.twitter-info h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.2rem;
+}
+
+.twitter-info p {
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.twitter-follow {
+  background-color: #1DA1F2;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.twitter-follow:hover {
+  background-color: #0c85d0;
+  color: white;
+}
+
+.tweets-container {
+  padding: 1.5rem;
+  min-height: 300px;
+}
+
+.tweet {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tweet:last-child {
+  border-bottom: none;
+}
+
+.tweet-content {
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.tweet-content a {
+  color: #1DA1F2;
+}
+
+.tweet-date {
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.tweet-actions {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.tweet-action {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.tweet-action i {
+  font-size: 1.1rem;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 119, 181, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Recommendations Section */
 #recommendations {
   padding: 6rem 0;
