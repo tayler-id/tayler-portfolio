@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Function to fetch tweets from the JSON file
   function fetchTweets() {
-    return fetch('../tweets.json')
+    return fetch('./tweets.json')
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to load tweets');
