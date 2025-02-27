@@ -1,15 +1,16 @@
 /**
  * Twitter Feed Integration
  * 
- * This script fetches and displays the most viewed Twitter posts from Tayler Ramsay.
- * It uses a mock data approach since direct Twitter API integration would require
- * authentication tokens that are not available in this static site context.
+ * This script loads and displays Twitter posts from Tayler Ramsay.
+ * It uses tweets fetched from the Twitter API and saved to a JSON file.
+ * 
+ * To update the tweets, run the fetch-tweets.js script with Node.js:
+ * node fetch-tweets.js
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-  // In a real implementation, this would be replaced with an actual API call
-  // to Twitter's API using proper authentication
-  const mockTweets = [
+  // Default tweets to use if the JSON file is not available
+  const defaultTweets = [
     {
       id: '1',
       content: 'Just published a new article on creating accessible design systems that scale across multiple platforms. #UX #DesignSystems #Accessibility',
@@ -43,6 +44,22 @@ document.addEventListener('DOMContentLoaded', function() {
       replies: 31
     }
   ];
+  
+  // Function to fetch tweets from the JSON file
+  function fetchTweets() {
+    return fetch('../tweets.json')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to load tweets');
+        }
+        return response.json();
+      })
+      .catch(error => {
+        console.warn('Error loading tweets:', error);
+        console.log('Using default tweets instead');
+        return defaultTweets;
+      });
+  }
 
   // Function to render tweets
   function renderTweets(tweets) {
@@ -56,8 +73,17 @@ document.addEventListener('DOMContentLoaded', function() {
       const tweetElement = document.createElement('div');
       tweetElement.className = 'tweet';
       
-      // Format links in tweet content (this is a simple version)
-      const formattedContent = tweet.content.replace(/#(\w+)/g, '<a href="https://twitter.com/hashtag/$1" target="_blank">#$1</a>');
+      // Format links in tweet content
+      let formattedContent = tweet.content;
+      
+      // Format hashtags
+      formattedContent = formattedContent.replace(/#(\w+)/g, '<a href="https://twitter.com/hashtag/$1" target="_blank">#$1</a>');
+      
+      // Format URLs
+      formattedContent = formattedContent.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+      
+      // Format mentions
+      formattedContent = formattedContent.replace(/@(\w+)/g, '<a href="https://twitter.com/$1" target="_blank">@$1</a>');
       
       tweetElement.innerHTML = `
         <div class="tweet-content">${formattedContent}</div>
@@ -65,15 +91,15 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="tweet-actions">
           <div class="tweet-action">
             <i class="far fa-heart"></i>
-            <span>${tweet.likes}</span>
+            <span>${tweet.likes || 0}</span>
           </div>
           <div class="tweet-action">
             <i class="fas fa-retweet"></i>
-            <span>${tweet.retweets}</span>
+            <span>${tweet.retweets || 0}</span>
           </div>
           <div class="tweet-action">
             <i class="far fa-comment"></i>
-            <span>${tweet.replies}</span>
+            <span>${tweet.replies || 0}</span>
           </div>
         </div>
       `;
@@ -82,8 +108,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Simulate loading delay for realism
-  setTimeout(() => {
-    renderTweets(mockTweets);
-  }, 1500);
+  // Load and render tweets
+  fetchTweets()
+    .then(tweets => {
+      // Simulate loading delay for better UX
+      setTimeout(() => {
+        renderTweets(tweets);
+      }, 1000);
+    });
 });
